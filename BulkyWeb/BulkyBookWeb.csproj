@@ -6,6 +6,17 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <Optimize>True</Optimize>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Controllers\**" />
+	  <Content Remove="Controllers\**" />
+	  <EmbeddedResource Remove="Controllers\**" />
+	  <None Remove="Controllers\**" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
@@ -21,7 +32,8 @@
 		<ProjectReference Include="..\Bulky.Models\BulkyBook.Models.csproj" />
 		<ProjectReference Include="..\Bulky.Utility\BulkyBook.Utility.csproj" />
 	</ItemGroup>
+
 	<ItemGroup>
-		<Folder Include="Controllers\" />
+	  <Folder Include="wwwroot\images\product\" />
 	</ItemGroup>
 </Project>
