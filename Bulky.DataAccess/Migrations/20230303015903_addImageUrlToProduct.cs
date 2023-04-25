@@ -5,7 +5,7 @@
 namespace BulkyBook.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class AddImageUrlToProduct : Migration
+    public partial class addImageUrlToProduct : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
