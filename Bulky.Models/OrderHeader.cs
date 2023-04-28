@@ -24,6 +24,8 @@ namespace BulkyBook.Models
         public DateTime PaymentDate { get; set; }
         public DateTime PaymentDue {  get; set; }
 
+        // Stripe Fields
+        public string? SessionId { get; set; }
         public string? PaymentIntentId { get; set; }
 
         [Required]
