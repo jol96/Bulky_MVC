@@ -127,7 +127,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 _unitOfWork.Save();
 			}
 
-			if (applicationUser.CompanyId.GetValueOrDefault() == 1)
+			if (applicationUser.CompanyId.GetValueOrDefault() == 0)
 			{
                 // it is a regular customer so capture payment
                 // stripe logic
@@ -183,7 +183,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 // "paid" is one of the possible enum status's for payment_status in Stripe
                 if (session.PaymentStatus.ToLower() == "paid")
                 {
-					_unitOfWork.OrderHeader.UpdateStripePaymentId(ShoppingCartVM.OrderHeader.Id, session.Id, session.PaymentIntentId);
+					_unitOfWork.OrderHeader.UpdateStripePaymentId(id, session.Id, session.PaymentIntentId);
                     _unitOfWork.OrderHeader.UpdateStatus(id, SD.StatusApproved, SD.PaymentStatusApproved);
                     _unitOfWork.Save();
 				}
