@@ -95,7 +95,13 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
         #region API CALLS
 
+        /// <summary>
+        /// Gets all users
+        /// </summary>
+        /// <returns>A list of users</returns>
         [HttpGet]
+        [Route("admin/user/getall")]
+        [Produces("application/json")]
         public IActionResult GetAll()
         {
             List<ApplicationUser> objUserList = _unitOfWork.ApplicationUser.GetAll(includeProperties: "Company").ToList();
@@ -118,7 +124,12 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         }
 
 
+        /// <summary>
+        /// Lock/Unlock user accessibility
+        /// </summary>
         [HttpPost]
+        [Route("admin/user/lockUnlock")]
+        [Produces("application/json")]
         public IActionResult LockUnlock([FromBody] string id)
         {
 

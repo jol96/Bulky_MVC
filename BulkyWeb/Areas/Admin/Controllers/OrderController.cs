@@ -4,6 +4,7 @@ using BulkyBook.Models.ViewModels;
 using BulkyBook.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Stripe;
 using Stripe.Checkout;
 using System.Diagnostics;
@@ -16,7 +17,8 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 	public class OrderController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
-        [BindProperty]
+        //[BindProperty]
+        [BindRequired]
         public OrderVM OrderVM { get; set; }
 
         public OrderController(IUnitOfWork unitOfWork)
@@ -205,8 +207,15 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
         #region API CALLS
 
+        /// <summary>
+        /// Gets all orders
+        /// </summary>
+        /// <param name="status"></param>
+        /// <returns>A list of orders based on the status parameter</returns>
         [HttpGet]
-		public IActionResult GetAll(string status)
+        [Route("admin/order/getall")]
+        [Produces("application/json")]
+        public IActionResult GetAll(string status)
 		{
             IEnumerable<OrderHeader> objOrderHeaders;
 
@@ -225,13 +234,13 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             switch (status)
             {
                 case "pending":
-                    objOrderHeaders = objOrderHeaders.Where(u => u.PaymentStatus == SD.PaymentStatusPending);
+                    objOrderHeaders = objOrderHeaders.Where(u => u.PaymentStatus == SD.PaymentStatusPending).ToList();
                     break;
                 case "inprocess":
-                    objOrderHeaders = objOrderHeaders.Where(u => u.OrderStatus == SD.StatusInProcess);
+                    objOrderHeaders = objOrderHeaders.Where(u => u.OrderStatus == SD.StatusInProcess).ToList();
                     break;
                 case "completed":
-                    objOrderHeaders = objOrderHeaders.Where(u => u.OrderStatus == SD.StatusShipped);
+                    objOrderHeaders = objOrderHeaders.Where(u => u.OrderStatus == SD.StatusShipped).ToList();
                     break;
                 case "approved":
                     objOrderHeaders = objOrderHeaders.Where(u => u.OrderStatus == SD.StatusApproved).ToList();
@@ -244,6 +253,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             return Json(new { data = objOrderHeaders });
 		}
 
-		#endregion
-	}
+
+        #endregion
+    }
 }
