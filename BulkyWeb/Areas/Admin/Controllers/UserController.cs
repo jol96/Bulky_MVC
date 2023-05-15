@@ -2,6 +2,7 @@
 using BulkyBook.Models;
 using BulkyBook.Models.ViewModels;
 using BulkyBook.Utility;
+using BulkyBookWeb.Services.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,18 +18,24 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUnitOfWork _unitOfWork;
-        public UserController(UserManager<IdentityUser> userManager, IUnitOfWork unitOfWork, RoleManager<IdentityRole> roleManager)
+        private readonly IUsersService _usersService;
+
+        public UserController(UserManager<IdentityUser> userManager, 
+            IUnitOfWork unitOfWork, 
+            RoleManager<IdentityRole> roleManager,
+            IUsersService usersService)
         {
             _unitOfWork = unitOfWork;
             _roleManager = roleManager;
             _userManager = userManager;
+            _usersService = usersService;
         }
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult RoleManagment(string userId)
+        public IActionResult RoleManagement(string userId)
         {
 
             RoleManagementVM RoleVM = new RoleManagementVM()
@@ -52,14 +59,12 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult RoleManagment(RoleManagementVM roleManagmentVM)
+        public IActionResult RoleManagement(RoleManagementVM roleManagmentVM)
         {
-
             string oldRole = _userManager.GetRolesAsync(_unitOfWork.ApplicationUser.Get(u => u.Id == roleManagmentVM.ApplicationUser.Id))
                     .GetAwaiter().GetResult().FirstOrDefault();
 
             ApplicationUser applicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == roleManagmentVM.ApplicationUser.Id);
-
 
             if (!(roleManagmentVM.ApplicationUser.Role == oldRole))
             {
@@ -92,61 +97,19 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-
         #region API CALLS
-
-        /// <summary>
-        /// Gets all users
-        /// </summary>
-        /// <returns>A list of users</returns>
         [HttpGet]
-        [Route("admin/user/getall")]
-        [Produces("application/json")]
         public IActionResult GetAll()
         {
-            List<ApplicationUser> objUserList = _unitOfWork.ApplicationUser.GetAll(includeProperties: "Company").ToList();
-
-            foreach (var user in objUserList)
-            {
-                user.Role = _userManager.GetRolesAsync(user).GetAwaiter().GetResult().FirstOrDefault();
-                if (user.Company == null)
-                {
-                    user.Company = new Company()
-                    {
-                        Name = ""
-                    };
-                }
-            }
-
-            return Json(new { data = objUserList });
+            List<ApplicationUser> userList = _usersService.GetAllUsers();
+            return Json(new { data = userList });
         }
 
-
-        /// <summary>
-        /// Lock/Unlock user accessibility
-        /// </summary>
         [HttpPost]
-        [Route("admin/user/lockUnlock")]
-        [Produces("application/json")]
         public IActionResult LockUnlock([FromBody] string id)
         {
-            var objFromDb = _unitOfWork.ApplicationUser.Get(u => u.Id == id);
-            if (objFromDb == null)
-            {
-                return Json(new { success = false, message = "Error while Locking/Unlocking" });
-            }
-            if (objFromDb.LockoutEnd != null && objFromDb.LockoutEnd > DateTime.Now)
-            {
-                //user is currently locked and we need to unlock them
-                objFromDb.LockoutEnd = DateTime.Now;
-            }
-            else
-            {
-                objFromDb.LockoutEnd = DateTime.Now.AddYears(1000);
-            }
-            _unitOfWork.ApplicationUser.Update(objFromDb);
-            _unitOfWork.Save();
-            return Json(new { success = true, message = "Operation Successful" });
+            var result = _usersService.LockUnlockUser(id);
+            return Json(new { data = result });
         }
 
         #endregion

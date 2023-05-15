@@ -29,14 +29,12 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             _imageService = imageService;
         }
 
-
         public IActionResult Index() 
         {
             List<BulkyBook.Models.Product> objProductList = _unitOfWork.Product.GetAll(includeProperties:"Category").ToList();
            
             return View(objProductList);
         }
-
 
         public IActionResult Upsert(int? id)
         {
@@ -63,7 +61,6 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             
         }
 
-
         [HttpPost]
         public IActionResult Upsert(ProductVM productVM, List<IFormFile>? files)
         {
@@ -71,7 +68,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             {
                 _productsService.UpsertProduct(productVM.Product);
                 _imageService.UploadImage(productVM.Product, files);
-                
+
                 TempData["success"] = "Product created/update successfully";
                 return RedirectToAction("Index");
             }
@@ -86,16 +83,13 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             }
         }
 
-
         #region API CALLS
-
         [HttpGet]
         public IActionResult GetAll()
         {
             var objProductList = _productsService.GetProducts();
             return Json(new { data = objProductList });
         }
-
 
         [HttpDelete]
         public IActionResult Delete(int? id)
@@ -104,7 +98,6 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
             return Json(new { success = isSuccess, message = message });         
         }
-
         #endregion
     }
 }
