@@ -108,9 +108,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
             foreach (var user in objUserList)
             {
-
                 user.Role = _userManager.GetRolesAsync(user).GetAwaiter().GetResult().FirstOrDefault();
-
                 if (user.Company == null)
                 {
                     user.Company = new Company()
@@ -132,13 +130,11 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         [Produces("application/json")]
         public IActionResult LockUnlock([FromBody] string id)
         {
-
             var objFromDb = _unitOfWork.ApplicationUser.Get(u => u.Id == id);
             if (objFromDb == null)
             {
                 return Json(new { success = false, message = "Error while Locking/Unlocking" });
             }
-
             if (objFromDb.LockoutEnd != null && objFromDb.LockoutEnd > DateTime.Now)
             {
                 //user is currently locked and we need to unlock them

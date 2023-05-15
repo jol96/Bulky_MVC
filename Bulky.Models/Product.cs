@@ -7,12 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.Text.Json.Serialization;
 
 namespace BulkyBook.Models
 {
     public class Product
     {
         [Key]
+        [JsonIgnore]
         public int Id { get; set; }
         [Required]
         public string Title { get; set; }
@@ -43,11 +45,14 @@ namespace BulkyBook.Models
         public double Price100 { get; set; }
 
         public int CategoryId { get; set; }
+
         [ForeignKey("CategoryId")]
         [ValidateNever]
+        [JsonIgnore]
         public Category Category { get; set; }
 
         [ValidateNever]
+        [JsonIgnore]
         public List<ProductImage> ProductImages { get; set; }
     }
 }

@@ -10,6 +10,8 @@ using BulkyBook.DataAccess.DbInitializer;
 using Microsoft.Data.SqlClient;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using BulkyBookWeb.Services.Abstractions;
+using BulkyBookWeb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +63,8 @@ builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IProductsService, ProductsService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 var app = builder.Build();
 
