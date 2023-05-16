@@ -2,6 +2,7 @@
 using BulkyBook.Models;
 using BulkyBook.Models.ViewModels;
 using BulkyBook.Utility;
+using BulkyBookWeb.Services.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -17,13 +18,16 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 	public class OrderController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
+        private readonly IOrderService _orderService;
+
         //[BindProperty]
         [BindRequired]
         public OrderVM OrderVM { get; set; }
 
-        public OrderController(IUnitOfWork unitOfWork)
+        public OrderController(IUnitOfWork unitOfWork, IOrderService orderService)
         {
 			_unitOfWork = unitOfWork;
+            _orderService = orderService;
         }
 
         public IActionResult Index()
@@ -206,15 +210,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         }
 
         #region API CALLS
-
-        /// <summary>
-        /// Gets all orders
-        /// </summary>
-        /// <param name="status"></param>
-        /// <returns>A list of orders based on the status parameter</returns>
         [HttpGet]
-        [Route("admin/order/getall")]
-        [Produces("application/json")]
         public IActionResult GetAll(string status)
 		{
             IEnumerable<OrderHeader> objOrderHeaders;
@@ -230,25 +226,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
                 objOrderHeaders = _unitOfWork.OrderHeader.GetAll(u=>u.ApplicationUserId== userId, includeProperties: "ApplicationUser");
             }
-
-            switch (status)
-            {
-                case "pending":
-                    objOrderHeaders = objOrderHeaders.Where(u => u.PaymentStatus == SD.PaymentStatusPending).ToList();
-                    break;
-                case "inprocess":
-                    objOrderHeaders = objOrderHeaders.Where(u => u.OrderStatus == SD.StatusInProcess).ToList();
-                    break;
-                case "completed":
-                    objOrderHeaders = objOrderHeaders.Where(u => u.OrderStatus == SD.StatusShipped).ToList();
-                    break;
-                case "approved":
-                    objOrderHeaders = objOrderHeaders.Where(u => u.OrderStatus == SD.StatusApproved).ToList();
-                    break;
-                default:
-                    break;
-            }
-
+            objOrderHeaders = _orderService.GetOrders(status, (List<OrderHeader>)objOrderHeaders);
 
             return Json(new { data = objOrderHeaders });
 		}

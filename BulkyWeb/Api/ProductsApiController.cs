@@ -1,6 +1,4 @@
 ﻿using BulkyBook.Models;
-using BulkyBook.Models.ViewModels;
-using BulkyBookWeb.Services;
 using BulkyBookWeb.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
