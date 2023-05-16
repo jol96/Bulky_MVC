@@ -69,26 +69,14 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
 
         #region API CALLS
-
-        /// <summary>
-        /// Gets all companies
-        /// </summary>
-        /// <returns>A list of companies</returns>
         [HttpGet]
-        [Route("admin/company/getall")]
-        [Produces("application/json")]
         public IActionResult GetAll()
         {
             List<Company> objCompanyList = _unitOfWork.Company.GetAll().ToList();
             return Json(new { data = objCompanyList });
         }
 
-        /// <summary>
-        /// Deletes a company
-        /// </summary>
         [HttpDelete]
-        [Route("admin/company/delete")]
-        [Produces("application/json")]
         public IActionResult Delete(int? id)
         {
             var CompanyToBeDeleted = _unitOfWork.Company.Get(u => u.Id == id);
@@ -102,7 +90,6 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
             return Json(new { success = true, message = "Delete Successful" });
         }
-
         #endregion
     }
 }
