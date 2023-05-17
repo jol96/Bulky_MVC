@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.Text.Json.Serialization;
 
 namespace BulkyBook.Models
 {
     public class Product
     {
-        [Key]
         [JsonIgnore]
+        [Key]
         public int Id { get; set; }
         [Required]
         public string Title { get; set; }
@@ -32,7 +26,6 @@ namespace BulkyBook.Models
         [Display(Name = "Price for 1-50")]
         [Range(1, 1000)]
         public double Price { get; set; }
-
 
         [Required]
         [Display(Name = "Price for 50+")]

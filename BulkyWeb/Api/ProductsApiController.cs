@@ -1,4 +1,5 @@
 ﻿using BulkyBook.Models;
+using BulkyBookWeb.Api.models;
 using BulkyBookWeb.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,7 +30,22 @@ namespace BulkyBookWeb.Api
             else
             {
                 _productsService.UpsertProduct(product);
-                return Ok();
+
+                ProductResponse upsertProductResponse = new() { 
+                  Id = product.Id,
+                  Title = product.Title,
+                  Description = product.Description,
+                  ISBN = product.ISBN,
+                  Author = product.Author,
+                  ListPrice = product.ListPrice,
+                  Price = product.Price,
+                  Price50 = product.Price50,
+                  Price100 = product.Price100,
+                  CategoryId = product.CategoryId,
+                  ProductImages = product.ProductImages
+                };
+
+                return Ok(Json(new { data = upsertProductResponse}));
             }
         }
 
@@ -41,8 +57,27 @@ namespace BulkyBookWeb.Api
         [Produces("application/json")]
         public IActionResult GetAll()
         {
-            var objProductList = _productsService.GetProducts();
-            return Ok(Json(new { data = objProductList }));
+            var productList = _productsService.GetProducts();
+            List<ProductResponse> productResponseList = new List<ProductResponse>();
+            foreach (var product in productList)
+            {
+                ProductResponse productResponse = new()
+                {
+                    Id = product.Id,
+                    Title = product.Title,
+                    Description = product.Description,
+                    ISBN = product.ISBN,
+                    Author = product.Author,
+                    ListPrice = product.ListPrice,
+                    Price = product.Price,
+                    Price50 = product.Price50,
+                    Price100 = product.Price100,
+                    CategoryId = product.CategoryId,
+                    ProductImages = product.ProductImages
+                };
+                productResponseList.Add(productResponse);
+            }
+            return Ok(Json(new { data = productResponseList }));
         }
 
         /// <summary>
@@ -61,7 +96,21 @@ namespace BulkyBookWeb.Api
             }
             else 
             {
-                return Ok(Json(new { data = product }));
+                ProductResponse productResponse = new()
+                {
+                    Id = product.Id,
+                    Title = product.Title,
+                    Description = product.Description,
+                    ISBN = product.ISBN,
+                    Author = product.Author,
+                    ListPrice = product.ListPrice,
+                    Price = product.Price,
+                    Price50 = product.Price50,
+                    Price100 = product.Price100,
+                    CategoryId = product.CategoryId,
+                    ProductImages = product.ProductImages
+                };
+                return Ok(Json(new { data = productResponse }));
             }          
         }
 
