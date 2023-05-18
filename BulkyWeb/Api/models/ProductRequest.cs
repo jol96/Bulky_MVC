@@ -1,22 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace BulkyBook.Models
+namespace BulkyBookWeb.Api.models
 {
-    public class Product
+    public class ProductRequest
     {
-        [Key]
-        [Required]
-        public int Id { get; set; }
         [Required]
         public string Title { get; set; }
+
+        [Required]
         public string Description { get; set; }
+
         [Required]
         public string ISBN { get; set; }
+
         [Required]
         public string Author { get; set; }
+
         [Required]
         [Display(Name = "List Price")]
         [Range(1, 1000)]
@@ -37,12 +36,7 @@ namespace BulkyBook.Models
         [Range(1, 1000)]
         public double Price100 { get; set; }
 
+        [Required]
         public int CategoryId { get; set; }
-        [ForeignKey("CategoryId")]
-        [ValidateNever]
-        public Category Category { get; set; }
-
-        [ValidateNever]
-        public List<ProductImage> ProductImages { get; set; }
     }
 }

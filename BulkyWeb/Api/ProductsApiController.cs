@@ -21,7 +21,7 @@ namespace BulkyBookWeb.Api
         [HttpPost]
         [Route("api/productsapi/upsert")]
         [Produces("application/json")]
-        public IActionResult Upsert(Product product)
+        public IActionResult Upsert(ProductRequest productrequest)
         {
             if (!ModelState.IsValid)
             {
@@ -29,23 +29,21 @@ namespace BulkyBookWeb.Api
             }
             else
             {
-                _productsService.UpsertProduct(product);
-
-                ProductResponse upsertProductResponse = new() { 
-                  Id = product.Id,
-                  Title = product.Title,
-                  Description = product.Description,
-                  ISBN = product.ISBN,
-                  Author = product.Author,
-                  ListPrice = product.ListPrice,
-                  Price = product.Price,
-                  Price50 = product.Price50,
-                  Price100 = product.Price100,
-                  CategoryId = product.CategoryId,
-                  ProductImages = product.ProductImages
+                Product product = new() {
+                    Title = productrequest.Title,
+                    Description = productrequest.Description,
+                    ISBN = productrequest.ISBN,
+                    Author = productrequest.Author,
+                    ListPrice = productrequest.ListPrice,
+                    Price = productrequest.Price,
+                    Price50 = productrequest.Price50,
+                    Price100 = productrequest.Price100,
+                    CategoryId = productrequest.CategoryId,
                 };
 
-                return Ok(Json(new { data = upsertProductResponse}));
+                _productsService.UpsertProduct(product);
+
+                return Ok(product);
             }
         }
 
@@ -58,26 +56,7 @@ namespace BulkyBookWeb.Api
         public IActionResult GetAll()
         {
             var productList = _productsService.GetProducts();
-            List<ProductResponse> productResponseList = new List<ProductResponse>();
-            foreach (var product in productList)
-            {
-                ProductResponse productResponse = new()
-                {
-                    Id = product.Id,
-                    Title = product.Title,
-                    Description = product.Description,
-                    ISBN = product.ISBN,
-                    Author = product.Author,
-                    ListPrice = product.ListPrice,
-                    Price = product.Price,
-                    Price50 = product.Price50,
-                    Price100 = product.Price100,
-                    CategoryId = product.CategoryId,
-                    ProductImages = product.ProductImages
-                };
-                productResponseList.Add(productResponse);
-            }
-            return Ok(Json(new { data = productResponseList }));
+            return Ok(productList);
         }
 
         /// <summary>
@@ -96,21 +75,7 @@ namespace BulkyBookWeb.Api
             }
             else 
             {
-                ProductResponse productResponse = new()
-                {
-                    Id = product.Id,
-                    Title = product.Title,
-                    Description = product.Description,
-                    ISBN = product.ISBN,
-                    Author = product.Author,
-                    ListPrice = product.ListPrice,
-                    Price = product.Price,
-                    Price50 = product.Price50,
-                    Price100 = product.Price100,
-                    CategoryId = product.CategoryId,
-                    ProductImages = product.ProductImages
-                };
-                return Ok(Json(new { data = productResponse }));
+                return Ok(product);
             }          
         }
 

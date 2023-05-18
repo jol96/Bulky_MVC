@@ -88,11 +88,11 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         public IActionResult GetAll()
         {
             var objProductList = _productsService.GetProducts();
-            return Json(new { data = objProductList });
+            return Json(new { data = objProductList }); 
         }
 
         [HttpDelete]
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(int id)
         {
             var (isSuccess, message) = _productsService.DeleteProduct(id);
 
