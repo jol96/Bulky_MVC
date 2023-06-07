@@ -1,4 +1,4 @@
-﻿namespace BulkyBook.Tests.UI
+﻿namespace BulkyBook.Tests.UI.Utilities
 {
     public class HelperMethods
     {

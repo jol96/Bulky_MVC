@@ -1,9 +1,10 @@
 using Microsoft.Extensions.Logging;
+using TechTalk.SpecFlow;
 
 namespace BulkyBook.Tests.UI.StepDefinitions
 {
     [Binding]
-    public sealed class ContextSteps : BaseSteps
+    public sealed class BrowserManagerSteps : BaseSteps
     {
         [Before]
         public void SetUp()
@@ -25,7 +26,7 @@ namespace BulkyBook.Tests.UI.StepDefinitions
         }
 
         [After]
-        public void After() 
+        public void CloseBrowser() 
         {
             if (driver != null)
             {
