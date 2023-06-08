@@ -7,7 +7,9 @@ namespace BulkyBook.Tests.UI.StepDefinitions
     [Binding]
     public class BrowserManagerSteps : BaseSteps
     {
-        
+        public BrowserManagerSteps(Context.ScenarioContext scenarioContext) : base(scenarioContext)
+        {
+        }
 
         [Before]
         public void SetUp()
@@ -18,27 +20,27 @@ namespace BulkyBook.Tests.UI.StepDefinitions
         [Given(@"I open the Book store web app")]
         public void GivenIOpenTheBookStoreWebApp()
         {
-            if (driver == null)
+            if (scenarioContext.driver == null)
             {
                 Assert.Fail("Cannot open the book store web app as driver is null");              
             }
             else
             {
-                driver.Navigate().GoToUrl(baseUrl);
+                scenarioContext.driver.Navigate().GoToUrl(scenarioContext.baseUrl);
             }
         }
 
         [After]
         public void CloseBrowser()
         {
-            if (driver == null)
+            if (scenarioContext.driver == null)
             {
                 Assert.Fail("Cannot quit driver as its equal to null");
             }
             else
             {
-                driver.Quit();
-                driver.Dispose();
+                scenarioContext.driver.Quit();
+                scenarioContext.driver.Dispose();
             }
         }
 

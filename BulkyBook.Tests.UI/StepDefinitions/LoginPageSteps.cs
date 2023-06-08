@@ -11,17 +11,21 @@ namespace BulkyBook.Tests.UI.StepDefinitions
     {
         public LoginPage LoginPage { get; set; }
 
-        [Given(@"I login to the application")]
-        public void GivenILoginToTheApplication()
+        public LoginPageSteps(Context.ScenarioContext scenarioContext) : base(scenarioContext)
         {
-            if (driver == null)
+            LoginPage = new LoginPage();
+        }
+
+        [Given(@"I enter the username and password credentials")]
+        public void GivenIEnterTheUsernameAndPasswordCredentials()
+        {
+            if (scenarioContext.driver == null)
             {
-                Assert.Fail("Unable to enter login details as driver is null");            
+                Assert.Fail("Unable to enter login details as driver is null");
             }
-            else 
+            else
             {
-                LoginPage.driver = driver;
-                LoginPage.EnterLoginCredentialsAndLogin(username, password);
+                LoginPage.EnterLoginCredentialsAndLogin(scenarioContext.driver, scenarioContext.username, scenarioContext.password);
             }
         }
     }

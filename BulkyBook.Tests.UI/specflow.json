@@ -1,0 +1,12 @@
+{
+  "specflow": {
+    "bindingCulture": "en-US",
+    "contextInjection": {
+      "dependencies": [
+        {
+          "type": "BulkyBook.Tests.UI.Context.ScenarioContext, BulkyBook.Tests.UI"
+        }
+      ]
+    }
+  }
+}
