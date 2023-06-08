@@ -7,18 +7,21 @@ namespace BulkyBook.Tests.UI.StepDefinitions
 {
     public abstract class BaseSteps
     {
-        protected ILoggerFactory loggerFactory;
-        protected ILogger<BaseSteps> logger;
-        protected IWebDriver? driver;
-        protected string baseUrl;
+        public ILoggerFactory loggerFactory { get; set; }
+        public ILogger<BaseSteps> logger { get; set; }
+        public IWebDriver driver { get; set; }
+        public string baseUrl { get; set; }
+        public string username { get; set; }
+        public string password { get; set; }
 
         public void GetConfiguration()
         {
-            CreateServices();
+            ConfigureServices();
             ConfigureBrowser();
+            ConfigureUsernamePassword();
         }
 
-        private void CreateServices()
+        public void ConfigureServices()
         {
             // create service provider
             var services = new ServiceCollection();
@@ -30,10 +33,16 @@ namespace BulkyBook.Tests.UI.StepDefinitions
             logger = loggerFactory.CreateLogger<BaseSteps>();  
         }
 
-        private void ConfigureBrowser()
+        public void ConfigureBrowser()
         {
             driver = DriverFactoryHelper.ConfigureDriver();
-            baseUrl = ConfigurationHelper.GetTargetUrl();
+            baseUrl = ConfigurationHelper.GetPropertyValue("TargetUrl");
+        }
+
+        public void ConfigureUsernamePassword() 
+        {
+            username = ConfigurationHelper.GetPropertyValue("UserName");
+            password = ConfigurationHelper.GetPropertyValue("Password");
         }
     }
 }

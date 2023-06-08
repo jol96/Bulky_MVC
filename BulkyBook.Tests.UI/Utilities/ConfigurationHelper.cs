@@ -29,9 +29,9 @@ namespace BulkyBook.Tests.UI.Utilities
             return logginSection;
         }
 
-        public static string GetTargetUrl()
+        public static string GetPropertyValue(string key)
         {
-            var value = CreateConfigurationBuilder(appSettings).GetSection("TargetUrl").Value;
+            var value = CreateConfigurationBuilder(appSettings).GetSection(key).Value;
             if (value is null)
             {
                 throw new ArgumentNullException(nameof(value), $"Value {value} could not be found in appsetting.json");

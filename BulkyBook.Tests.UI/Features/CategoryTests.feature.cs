@@ -103,6 +103,9 @@ this.ScenarioInitialize(scenarioInfo);
 #line 6
     testRunner.Given("I open the Book store web app", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
+#line 7
+    testRunner.Given("I login to the application", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
             }
             this.ScenarioCleanup();
         }

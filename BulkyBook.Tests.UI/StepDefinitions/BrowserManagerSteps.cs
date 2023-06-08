@@ -1,11 +1,14 @@
 using Microsoft.Extensions.Logging;
+using NUnit.Framework;
 using TechTalk.SpecFlow;
 
 namespace BulkyBook.Tests.UI.StepDefinitions
 {
     [Binding]
-    public sealed class BrowserManagerSteps : BaseSteps
+    public class BrowserManagerSteps : BaseSteps
     {
+        
+
         [Before]
         public void SetUp()
         {
@@ -15,27 +18,27 @@ namespace BulkyBook.Tests.UI.StepDefinitions
         [Given(@"I open the Book store web app")]
         public void GivenIOpenTheBookStoreWebApp()
         {
-            if (driver != null)
+            if (driver == null)
             {
-                driver.Navigate().GoToUrl(baseUrl);
+                Assert.Fail("Cannot open the book store web app as driver is null");              
             }
             else
             {
-                logger.LogError("Driver is equal to null");
+                driver.Navigate().GoToUrl(baseUrl);
             }
         }
 
         [After]
-        public void CloseBrowser() 
+        public void CloseBrowser()
         {
-            if (driver != null)
+            if (driver == null)
+            {
+                Assert.Fail("Cannot quit driver as its equal to null");
+            }
+            else
             {
                 driver.Quit();
                 driver.Dispose();
-            }
-            else 
-            {
-                logger.LogError("Cannot quit driver as its equal to null");
             }
         }
 
