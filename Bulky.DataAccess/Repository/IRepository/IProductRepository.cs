@@ -1,4 +1,5 @@
 ﻿using BulkyBook.Models;
+using BulkyBookWeb.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

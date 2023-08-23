@@ -2,6 +2,7 @@
 using BulkyBookWeb.Api.models;
 using BulkyBookWeb.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace BulkyBookWeb.Api
 {
@@ -41,7 +42,12 @@ namespace BulkyBookWeb.Api
                     CategoryId = productrequest.CategoryId,
                 };
 
-                _productsService.UpsertProduct(product);
+                var upsertResult = _productsService.UpsertProduct(product);
+
+                if (!upsertResult.IsSuccess)
+                {
+                    return BadRequest(upsertResult.Error);
+                }
 
                 return Ok(product);
             }

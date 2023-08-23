@@ -1,6 +1,7 @@
 ﻿using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBook.Models;
 using BulkyBook.Models.ViewModels;
+using BulkyBookWeb.Repository.Models;
 using BulkyBookWeb.Services.Abstractions;
 
 namespace BulkyBookWeb.Services
@@ -16,7 +17,7 @@ namespace BulkyBookWeb.Services
             _imageService = imageService;
         }
 
-        public void UpsertProduct(Product product)
+        public OperationResult UpsertProduct(Product product)
         {
             if (product.Id == 0)
             {
@@ -26,7 +27,8 @@ namespace BulkyBookWeb.Services
             {
                 _unitOfWork.Product.Update(product);
             }
-            _unitOfWork.Save();
+
+            return _unitOfWork.Save();
         }
 
         public List<Product> GetProducts()

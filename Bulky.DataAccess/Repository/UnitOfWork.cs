@@ -1,9 +1,12 @@
 ﻿using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBook.DataAcess.Data;
+using BulkyBook.Models;
+using BulkyBookWeb.Repository.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BulkyBook.DataAccess.Repository
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork: IUnitOfWork
     {
         private ApplicationDbContext _db;
         public ICategoryRepository Category { get; private set; }
@@ -28,9 +31,42 @@ namespace BulkyBook.DataAccess.Repository
             OrderDetail = new OrderDetailRepository(_db);
         }
 
-        public void Save()
+        public OperationResult Save()
         {
-            _db.SaveChanges();
+            OperationResult result;
+
+            try
+            {
+                _db.SaveChanges();
+                result = new OperationResult
+                {
+                    IsSuccess = true
+                };
+            }
+            catch (DbUpdateException ex)
+            {
+                result = new OperationResult
+                {
+                    Error = new ErrorModel
+                    {
+                        ErrorCode = $"DbUpdateException. InnerException message: {ex.InnerException.Message}",
+                        ErrorMessage = ex.Message
+                    },
+                };
+            }
+            catch (Exception ex)
+            {
+                result = new OperationResult
+                {
+                    Error = new ErrorModel
+                    {
+                        ErrorCode = $"Generic exception. InnerException message: {ex.InnerException.Message}",
+                        ErrorMessage = ex.Message
+                    },
+                };
+            }
+
+            return result;
         }
     }
 }
