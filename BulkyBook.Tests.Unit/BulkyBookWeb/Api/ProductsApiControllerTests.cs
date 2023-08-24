@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
 
-namespace BulkyBook.Tests.Unit.Api
+namespace BulkyBook.Tests.Unit.BulkyBookWeb.Api
 {
     public class ProductsApiControllerTests
     {
@@ -43,15 +43,15 @@ namespace BulkyBook.Tests.Unit.Api
         {
             // Arrange
             var productRequest = ProductRequestFactory.CreateNewInvalidProductRequest();
-            var response = new OperationResult 
-                { 
-                    IsSuccess = false,
-                    Error = new ErrorModel
-                    {
-                        ErrorCode = "DbUpdate Exception",
-                        ErrorMessage = "Invalid CategoryId"
-                    }
-                };
+            var response = new OperationResult
+            {
+                IsSuccess = false,
+                Error = new ErrorModel
+                {
+                    ErrorCode = "DbUpdate Exception",
+                    ErrorMessage = "Invalid CategoryId"
+                }
+            };
             _productsServiceMock.Setup(_ => _.UpsertProduct(It.IsAny<Product>()))
                 .Returns(response);
 

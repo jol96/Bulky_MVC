@@ -9,26 +9,34 @@ namespace BulkyBook.DataAccess.Repository
     public class UnitOfWork: IUnitOfWork
     {
         private ApplicationDbContext _db;
-        public ICategoryRepository Category { get; private set; }
-        public IProductRepository Product { get; private set; }
-        public IProductImageRepository ProductImage { get; private set; }
-        public ICompanyRepository Company { get; private set; }
-        public IShoppingCartRepository ShoppingCart { get; private set; }
-        public IApplicationUserRepository ApplicationUser { get; private set; }
-        public IOrderHeaderRepository OrderHeader { get; private set; }
-        public IOrderDetailRepository OrderDetail { get; private set; }
+        public ICategoryRepository Category { get; set; }
+        public IProductRepository Product { get; set; }
+        public IProductImageRepository ProductImage { get; set; }
+        public ICompanyRepository Company { get; set; }
+        public IShoppingCartRepository ShoppingCart { get; set; }
+        public IApplicationUserRepository ApplicationUser { get; set; }
+        public IOrderHeaderRepository OrderHeader { get; set; }
+        public IOrderDetailRepository OrderDetail { get; set; }
 
-        public UnitOfWork(ApplicationDbContext db)
+        public UnitOfWork(ApplicationDbContext db, 
+            ICategoryRepository categoryRepository,
+            IProductRepository productRepository,
+            IProductImageRepository productImageRepository,
+            ICompanyRepository companyRepository,
+            IShoppingCartRepository shoppingCartRepository,
+            IApplicationUserRepository applicationUserRepository,
+            IOrderHeaderRepository orderHeaderRepository,
+            IOrderDetailRepository orderDetailRepository)
         {
             _db = db;
-            Category = new CategoryRepository(_db);
-            Product = new ProductRepository(_db);
-            ProductImage = new ProductImageRepository(_db);
-            Company = new CompanyRepository(_db);
-            ShoppingCart = new ShoppingCartRepository(_db);
-            ApplicationUser = new ApplicationUserRepository(_db);
-            OrderHeader = new OrderHeaderRepository(_db);
-            OrderDetail = new OrderDetailRepository(_db);
+            Category = categoryRepository;
+            Product = productRepository;
+            ProductImage = productImageRepository;
+            Company = companyRepository;
+            ShoppingCart = shoppingCartRepository;
+            ApplicationUser = applicationUserRepository;
+            OrderHeader = orderHeaderRepository;
+            OrderDetail = orderDetailRepository;
         }
 
         public OperationResult Save()
@@ -45,23 +53,28 @@ namespace BulkyBook.DataAccess.Repository
             }
             catch (DbUpdateException ex)
             {
+                string innerExceptionMessage = ex.InnerException?.Message ?? "Inner Exception Message Unknown";
+                string exceptionMessage = ex.Message ?? "Message Unknown";
                 result = new OperationResult
                 {
+
                     Error = new ErrorModel
                     {
-                        ErrorCode = $"DbUpdateException. InnerException message: {ex.InnerException.Message}",
-                        ErrorMessage = ex.Message
+                        ErrorCode = $"DbUpdateException. {innerExceptionMessage}",
+                        ErrorMessage = exceptionMessage
                     },
-                };
+                };   
             }
             catch (Exception ex)
             {
+                string innerExceptionMessage = ex.InnerException?.Message ?? "Inner Exception Message Unknown";
+                string exceptionMessage = ex.Message ?? "Message Unknown";
                 result = new OperationResult
                 {
                     Error = new ErrorModel
                     {
-                        ErrorCode = $"Generic exception. InnerException message: {ex.InnerException.Message}",
-                        ErrorMessage = ex.Message
+                        ErrorCode = $"DbUpdateException.  {innerExceptionMessage}",
+                        ErrorMessage = exceptionMessage
                     },
                 };
             }

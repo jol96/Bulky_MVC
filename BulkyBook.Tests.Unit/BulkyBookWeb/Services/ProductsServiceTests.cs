@@ -5,14 +5,9 @@ using BulkyBookWeb.Repository.Models;
 using BulkyBookWeb.Services;
 using BulkyBookWeb.Services.Abstractions;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
-namespace BulkyBook.Tests.Unit.Services
+namespace BulkyBook.Tests.Unit.BulkyBookWeb.Services
 {
     public class ProductsServiceTests
     {
@@ -22,7 +17,7 @@ namespace BulkyBook.Tests.Unit.Services
 
         public ProductsServiceTests()
         {
-            _unitOfWorkMock = new Mock<IUnitOfWork> ();
+            _unitOfWorkMock = new Mock<IUnitOfWork>();
             _imageServiceMock = new Mock<IImageService>();
             _sut = new ProductsService(_unitOfWorkMock.Object, _imageServiceMock.Object);
         }
@@ -34,7 +29,7 @@ namespace BulkyBook.Tests.Unit.Services
             var product = ProductFactory.CreateNewValidProduct();
             _unitOfWorkMock.Setup(uow => uow.Product.Add(It.IsAny<Product>()));
             _unitOfWorkMock.Setup(uow => uow.Save()).Returns(new OperationResult { IsSuccess = true });
-            
+
             // Act
             var actualResult = _sut.UpsertProduct(product);
 
@@ -64,8 +59,8 @@ namespace BulkyBook.Tests.Unit.Services
             var product = ProductFactory.CreateNewInvalidProduct();
             _unitOfWorkMock.Setup(uow => uow.Product.Add(It.IsAny<Product>()));
             _unitOfWorkMock.Setup(uow => uow.Save()).Returns(
-                new OperationResult 
-                { 
+                new OperationResult
+                {
                     IsSuccess = false,
                     Error = new ErrorModel
                     {
