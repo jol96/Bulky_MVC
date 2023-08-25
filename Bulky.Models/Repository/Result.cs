@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace BulkyBookWeb.Repository.Models
 {
-    public class OperationResult
+    public class Result<T>
     {
         public bool IsSuccess { get; set; }
-        //public T Result { get; set; }
+        public T? InnerResult { get; set; }
         public ErrorModel? Error { get; set; }
     }
 }

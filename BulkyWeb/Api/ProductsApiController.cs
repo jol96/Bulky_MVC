@@ -10,10 +10,12 @@ namespace BulkyBookWeb.Api
     public class ProductsApiController : Controller
     {
         private readonly IProductsService _productsService;
+        private readonly ILogger<ProductsApiController> _logger;
 
-        public ProductsApiController(IProductsService productsService)
+        public ProductsApiController(IProductsService productsService, ILogger<ProductsApiController> logger)
         {
             _productsService = productsService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -61,6 +63,7 @@ namespace BulkyBookWeb.Api
         [Produces("application/json")]
         public IActionResult GetAll()
         {
+            _logger.LogInformation($"Retrieving the list of products");
             var productList = _productsService.GetProducts();
             return Ok(productList);
         }

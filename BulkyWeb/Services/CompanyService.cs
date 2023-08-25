@@ -16,7 +16,7 @@ namespace BulkyBookWeb.Services
 
         public List<Company> GetCompanies()
         {
-            List<Company> objCompanyList = _unitOfWork.Company.GetAll().ToList();
+            List<Company> objCompanyList = _unitOfWork.Company.GetAll().Item1.ToList();
             return objCompanyList;
         }
 

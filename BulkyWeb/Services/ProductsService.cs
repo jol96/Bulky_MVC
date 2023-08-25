@@ -33,7 +33,7 @@ namespace BulkyBookWeb.Services
 
         public List<Product> GetProducts()
         {
-            List<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+            List<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").Item1.ToList();
             return objProductList;
         }
 

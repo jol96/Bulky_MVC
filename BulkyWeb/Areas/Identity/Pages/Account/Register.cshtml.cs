@@ -136,7 +136,7 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
                     Text = i,
                     Value = i
                 }),
-                CompanyList = _unitOfWork.Company.GetAll().Select(i => new SelectListItem
+                CompanyList = _unitOfWork.Company.GetAll().Item1.Select(i => new SelectListItem
                 {
                     Text = i.Name,
                     Value = i.Id.ToString()

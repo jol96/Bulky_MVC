@@ -58,24 +58,66 @@ namespace BulkyBook.DataAccess.Repository
             return query.FirstOrDefault();
         }
 
-        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
+        //public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
+        //{
+        //    IQueryable<T> query = dbSet;
+
+        //    if (filter != null)
+        //    {
+        //        query = query.Where(filter);
+        //    }
+            
+        //    if (!string.IsNullOrEmpty(includeProperties))
+        //    {
+        //        foreach(var includeProp in includeProperties
+        //            .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+        //        {
+        //            query = query.Include(includeProp);
+        //        }
+        //    }
+        //    return query.ToList();
+        //}
+
+        public (IEnumerable<T>, OperationResult) GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
+            OperationResult result;
 
-            if (filter != null)
+            try
             {
-                query = query.Where(filter);
+                if (filter != null)
+                {
+                    query = query.Where(filter);
+                }
+
+                if (!string.IsNullOrEmpty(includeProperties))
+                {
+                    foreach (var includeProp in includeProperties
+                        .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        query = query.Include(includeProp);
+                    }
+                }
+
+                result = new OperationResult
+                {
+                    IsSuccess = true
+                };
+            }
+            catch (Exception ex)
+            {
+                result = new OperationResult
+                {
+                    IsSuccess = false,
+                    Error = new ErrorModel
+                    {
+                        ErrorCode = ex.InnerException?.Message,
+                        ErrorMessage = ex?.Message
+                    }
+                };
             }
             
-            if (!string.IsNullOrEmpty(includeProperties))
-            {
-                foreach(var includeProp in includeProperties
-                    .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    query = query.Include(includeProp);
-                }
-            }
-            return query.ToList();
+            return (query.ToList(), result);
         }
 
         public void Remove(T entity)

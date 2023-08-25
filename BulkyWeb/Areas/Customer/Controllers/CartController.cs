@@ -30,11 +30,11 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             ShoppingCartVM = new()
             {
                 ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId,
-                includeProperties: "Product"),
+                includeProperties: "Product").Item1,
                 OrderHeader = new()
             };
 
-            IEnumerable<ProductImage> productImages = _unitOfWork.ProductImage.GetAll();
+            IEnumerable<ProductImage> productImages = _unitOfWork.ProductImage.GetAll().Item1;
 
             // Calculate cart total
             foreach (var cart in ShoppingCartVM.ShoppingCartList)
@@ -55,7 +55,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             ShoppingCartVM = new()
             {
                 ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId,
-                includeProperties: "Product"),
+                includeProperties: "Product").Item1,
                 OrderHeader = new()
             };
 
@@ -86,7 +86,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value; //3e7c696e-57c0-4fa2-9204-04a7a2addffb
 
 			ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId,
-				includeProperties: "Product");
+				includeProperties: "Product").Item1;
 
             ShoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
             ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
@@ -192,7 +192,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             }
 
             List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart
-                .GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+                .GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).Item1.ToList();
 
             _unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
             _unitOfWork.Save();
@@ -218,7 +218,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 _unitOfWork.ShoppingCart.Remove(cartFromDb);
 
                 HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart
-                .GetAll(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
+                .GetAll(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Item1.Count() - 1);
             }
             else
             {
@@ -236,7 +236,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             _unitOfWork.ShoppingCart.Remove(cartFromDb);
 
             HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart
-                .GetAll(u=>u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
+                .GetAll(u=>u.ApplicationUserId == cartFromDb.ApplicationUserId).Item1.Count() - 1);
 
             _unitOfWork.Save();
             return RedirectToAction(nameof(Index));

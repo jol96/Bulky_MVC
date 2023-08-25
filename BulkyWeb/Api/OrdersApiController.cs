@@ -34,14 +34,16 @@ namespace BulkyBookWeb.Api
 
             if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
             {
-                objOrderHeaders = _unitOfWork.OrderHeader.GetAll(includeProperties: "ApplicationUser").ToList();
+                var (orderList, result) = _unitOfWork.OrderHeader.GetAll(includeProperties: "ApplicationUser");
+                objOrderHeaders = orderList;
             }
             else
             {
                 var claimsIdentity = (ClaimsIdentity)User.Identity;
                 var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                objOrderHeaders = _unitOfWork.OrderHeader.GetAll(u => u.ApplicationUserId == userId, includeProperties: "ApplicationUser");
+                var (orderList, result) = _unitOfWork.OrderHeader.GetAll(u => u.ApplicationUserId == userId, includeProperties: "ApplicationUser");
+                objOrderHeaders = orderList;
             }
 
             objOrderHeaders = _orderService.GetOrders(status, (List<OrderHeader>)objOrderHeaders);

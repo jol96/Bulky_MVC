@@ -6,6 +6,7 @@ using BulkyBookWeb.Repository.Models;
 using BulkyBookWeb.Services.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -14,12 +15,14 @@ namespace BulkyBook.Tests.Unit.BulkyBookWeb.Api
     public class ProductsApiControllerTests
     {
         private readonly Mock<IProductsService> _productsServiceMock;
+        private readonly Mock<ILogger<ProductsApiController>> _loggerMock;
         private readonly ProductsApiController _sut;
 
         public ProductsApiControllerTests()
         {
             _productsServiceMock = new Mock<IProductsService>();
-            _sut = new ProductsApiController(_productsServiceMock.Object);
+            _loggerMock = new Mock<ILogger<ProductsApiController>>();
+            _sut = new ProductsApiController(_productsServiceMock.Object, _loggerMock.Object);
         }
 
         [Fact]

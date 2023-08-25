@@ -37,10 +37,12 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
         public IActionResult Details(int orderId)
         {
+            var orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == orderId, includeProperties: "ApplicationUser");
+            var (orderDetail, result) = _unitOfWork.OrderDetail.GetAll(u => u.OrderHeaderId == orderId, includeProperties: "Product");
             OrderVM = new()
             {
-                OrderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == orderId, includeProperties: "ApplicationUser"),
-                OrderDetail = _unitOfWork.OrderDetail.GetAll(u => u.OrderHeaderId == orderId, includeProperties:"Product")
+                OrderHeader = orderHeader,
+                OrderDetail = orderDetail
             };
             return View(OrderVM);
         }
@@ -147,8 +149,11 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         {
             OrderVM.OrderHeader = _unitOfWork.OrderHeader
                 .Get(u=>u.Id == OrderVM.OrderHeader.Id, includeProperties: "ApplicationUser");
-            OrderVM.OrderDetail = _unitOfWork.OrderDetail
-                .GetAll(u=>u.OrderHeaderId== OrderVM.OrderHeader.Id, includeProperties: "Product");
+
+            var (orderDetail, result) = _unitOfWork.OrderDetail
+                .GetAll(u => u.OrderHeaderId == OrderVM.OrderHeader.Id, includeProperties: "Product");
+
+            OrderVM.OrderDetail = orderDetail;
 
             //stripe logic
             var domain = $"{Request.Scheme}://{Request.Host.Value}/";
@@ -217,14 +222,15 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
             if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
             {
-                objOrderHeaders = _unitOfWork.OrderHeader.GetAll(includeProperties: "ApplicationUser").ToList();
+                var (orderHeaders, result) = _unitOfWork.OrderHeader.GetAll(includeProperties: "ApplicationUser");
+                objOrderHeaders = orderHeaders;
             }
             else
             {
                 var claimsIdentity = (ClaimsIdentity)User.Identity;
                 var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-                objOrderHeaders = _unitOfWork.OrderHeader.GetAll(u=>u.ApplicationUserId== userId, includeProperties: "ApplicationUser");
+                var (orderHeader, result) = _unitOfWork.OrderHeader.GetAll(u => u.ApplicationUserId == userId, includeProperties: "ApplicationUser");
+                objOrderHeaders = orderHeader;
             }
             objOrderHeaders = _orderService.GetOrders(status, (List<OrderHeader>)objOrderHeaders);
 

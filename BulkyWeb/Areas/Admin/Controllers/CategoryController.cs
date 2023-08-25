@@ -18,7 +18,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            List<Category> objCategoryList = _unitOfWork.Category.GetAll().ToList();
+            var (objCategoryList, result) = _unitOfWork.Category.GetAll();
             return View(objCategoryList);
         }
 

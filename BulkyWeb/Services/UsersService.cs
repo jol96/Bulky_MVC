@@ -18,7 +18,7 @@ namespace BulkyBookWeb.Services
 
         public List<ApplicationUser> GetAllUsers()
         {
-            List<ApplicationUser> userList = _unitOfWork.ApplicationUser.GetAll(includeProperties: "Company").ToList();
+            List<ApplicationUser> userList = _unitOfWork.ApplicationUser.GetAll(includeProperties: "Company").Item1.ToList();
 
             foreach (var user in userList)
             {
