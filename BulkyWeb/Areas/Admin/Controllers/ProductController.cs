@@ -31,30 +31,36 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index2() 
-        {
-            List<BulkyBook.Models.Product> objProductList = _unitOfWork.Product.GetAll(includeProperties:"Category").Item1.ToList();
-            return View(objProductList);
-        }
-
         public IActionResult Index()
         {
             var (objProductList, result) = _unitOfWork.Product.GetAll(includeProperties: "Category");
 
             if (!result.IsSuccess)
             {
-                _logger.LogInformation("Error occured retreiving products for ProductController Index view.");
-                _logger.LogInformation($"{result.Error.ErrorCode} \n {result.Error.ErrorMessage}");
+                _logger.LogInformation($"Error occured retreiving products for ProductController Index view." +
+                    $"{result.Error?.ErrorCode} \n {result.Error?.ErrorMessage}");
+                return View("ErrorView");
             }
-            
-            return View(objProductList);
+            else
+            {
+                return View(objProductList);
+            }         
         }
 
         public IActionResult Upsert(int? id)
         {
+            var (categoryList, result) = _unitOfWork.Category.GetAll();
+
+            if (!result.IsSuccess)
+            {
+                _logger.LogError($"Error occured retreiving categories for ProductController Upsert view. " +
+                    $"{result.Error?.ErrorCode}. {result.Error?.ErrorMessage}");
+                return View("ErrorView");
+            }
+
             ProductVM productVM = new()
             {
-                CategoryList = _unitOfWork.Category.GetAll().Item1.Select(u => new SelectListItem
+                CategoryList = categoryList.Select(u => new SelectListItem
                 {
                     Text = u.Name,
                     Value = u.Id.ToString()
@@ -69,7 +75,8 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             else
             {
                 //update
-                productVM.Product = _unitOfWork.Product.Get(u=>u.Id==id, includeProperties: "ProductImages");
+                var productToUpdate = _unitOfWork.Product.Get(u => u.Id == id, includeProperties: "ProductImages");
+                productVM.Product = productToUpdate;
                 return View(productVM);
             }
             
